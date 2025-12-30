@@ -4,17 +4,23 @@
     box-sizing: border-box;
 }
 
-html, body {
+html, body, #root {
     height: 100%;
+    width: 100%;
     overflow: hidden;
+    background-color: #f5f7fa;
 }
 
 #app {
     height: 100vh;
+    width: 100vw;
     display: flex;
     flex-direction: column;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: #f5f7fa;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 /* 顶部标题栏 */
@@ -28,6 +34,7 @@ html, body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     flex-shrink: 0;
     z-index: 100;
+    height: 56px;
 }
 
 .header-left {
@@ -102,6 +109,7 @@ html, body {
     display: flex;
     overflow: hidden;
     min-height: 0;
+    height: calc(100vh - 56px - 40px); /* 减去header和status-bar的高度 */
 }
 
 /* 侧边栏通用样式 */
@@ -111,6 +119,7 @@ html, body {
     flex-direction: column;
     box-shadow: 2px 0 8px rgba(0,0,0,0.05);
     flex-shrink: 0;
+    height: 100%;
 }
 
 .left-sidebar {
@@ -131,6 +140,7 @@ html, body {
     border-bottom: 1px solid #e5e7eb;
     background-color: #f8fafc;
     flex-shrink: 0;
+    height: 60px;
 }
 
 .sidebar-header h3 {
@@ -244,6 +254,7 @@ html, body {
     position: relative;
     min-width: 0;
     overflow: hidden;
+    height: 100%;
 }
 
 .canvas-container {
@@ -251,6 +262,7 @@ html, body {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
 }
 
 .canvas-toolbar {
@@ -258,6 +270,7 @@ html, body {
     background-color: #f8fafc;
     border-bottom: 1px solid #e5e7eb;
     flex-shrink: 0;
+    height: 48px;
 }
 
 .canvas-info {
@@ -277,6 +290,7 @@ html, body {
     overflow: auto;
     cursor: default;
     min-height: 0;
+    height: calc(100% - 48px);
 }
 
 /* 节点样式 */
@@ -401,6 +415,7 @@ html, body {
     flex: 1;
     overflow: auto;
     min-height: 0;
+    height: calc(100% - 60px);
 }
 
 .code-content {
@@ -426,6 +441,7 @@ html, body {
     font-size: 12px;
     border-top: 1px solid #5a67d8;
     flex-shrink: 0;
+    height: 40px;
 }
 
 .status-text {
