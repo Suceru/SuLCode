@@ -2,9 +2,8 @@ package debugger
 
 import (
 	"bufio"
+	"log"
 	"net"
-
-	"github.com/Microsoft/go-winio"
 )
 
 type DebugServer struct {
@@ -12,27 +11,52 @@ type DebugServer struct {
 	Paused   chan bool
 }
 
-func StartDebugServer() {
-	// 创建命名管道
-	ln, _ := winio.ListenPipe(`\\.\pipe\GlowCodeDebug`, nil)
+func StartDebugServer() *DebugServer {
+	server := &DebugServer{
+		PipeName: "GlowCodeDebug",
+		Paused:   make(chan bool),
+	}
+
+	// 在Windows上使用TCP代替命名管道进行跨平台兼容
+	ln, err := net.Listen("tcp", ":9999")
+	if err != nil {
+		log.Printf("Failed to start debug server: %v", err)
+		return server
+	}
+
 	go func() {
 		for {
-			conn, _ := ln.Accept()
-			go handleConn(conn)
+			conn, err := ln.Accept()
+			if err != nil {
+				continue
+			}
+			go server.handleConn(conn)
 		}
 	}()
+
+	return server
 }
 
-func handleConn(conn net.Conn) {
+func (ds *DebugServer) handleConn(conn net.Conn) {
+	defer conn.Close()
 	reader := bufio.NewReader(conn)
+
 	for {
 		// 接收来自 C# 的断点命中信号
-		msg, _ := reader.ReadString('\n')
+		msg, err := reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+
+		log.Printf("Breakpoint hit: %s", msg)
 		// 通知前端高亮显示当前节点
 		// runtime.EventsEmit(ctx, "breakpoint_hit", msg)
 
-		// 阻塞在这里，直到用户点击“下一步”
+		// 阻塞在这里，直到用户点击"下一步"
 		// <-continueSignal
-		conn.Write([]byte("CONTINUE\n"))
+		_, err = conn.Write([]byte("CONTINUE\n"))
+		if err != nil {
+			break
+		}
 	}
 }

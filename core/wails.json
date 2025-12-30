@@ -1,5 +1,5 @@
 {
-  "name": "SuLCode",
+  "name": "SulowCode",
   "frontend:install": "npm install",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
